@@ -14,7 +14,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 public class ClienteDto extends RepresentationModel<ClienteDto> {
 
-    private String oid;
+    private String chave;
 
     @NotBlank(message = "O nome precisa ser informado")
     private String nome;
