@@ -26,4 +26,10 @@ public class ClienteService extends ClienteUtils {
 
         return clienteDtoPosSave;
     }
+
+    public ClienteDto findById(String oid) {
+        Cliente cliente = repository.findById(oid).orElseThrow();
+
+        return ClassMapper.parseObject(configuredMapper(), cliente, ClienteDto.class);
+    }
 }

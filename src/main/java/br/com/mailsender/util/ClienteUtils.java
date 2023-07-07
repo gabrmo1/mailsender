@@ -22,13 +22,13 @@ public class ClienteUtils {
     protected ModelMapper configuredMapper() {
         ModelMapper mapper = new ModelMapper();
 
-        mapper.typeMap(Cliente.class, ClienteDto.class).addMappings(mapping -> mapping.map(Cliente::getOid, ClienteDto::setOid));
+        mapper.typeMap(Cliente.class, ClienteDto.class).addMappings(mapping -> mapping.map(Cliente::getOid, ClienteDto::setChave));
 
         return mapper;
     }
 
     protected void implementFindByOidHATEOAS(ClienteDto clienteDto) {
-        clienteDto.add(linkTo(methodOn(ClienteController.class).findByOid(clienteDto.getOid())).withSelfRel());
+        clienteDto.add(linkTo(methodOn(ClienteController.class).findByOid(clienteDto.getChave())).withSelfRel());
     }
 
 }

@@ -1,8 +1,6 @@
 package br.com.mailsender.controllers;
 
 import br.com.mailsender.dtos.ClienteDto;
-import br.com.mailsender.entities.Cliente;
-import br.com.mailsender.repositories.ClienteRepository;
 import br.com.mailsender.services.ClienteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 public class ClienteController {
 
     private final ClienteService service;
-    private final ClienteRepository repository;
 
     @PostMapping("/cadastrar")
     public ResponseEntity<ClienteDto> cadastrar(@RequestBody @Valid ClienteDto clienteDto) {
@@ -25,10 +22,10 @@ public class ClienteController {
     }
 
     @GetMapping(value = "/{oid}")
-    public ResponseEntity<Cliente> findByOid(@PathVariable("oid") String oid) {
-        Cliente cliente = repository.findById(oid).orElseThrow();
+    public ResponseEntity<ClienteDto> findByOid(@PathVariable("oid") String oid) {
+        ClienteDto clienteDto = service.findById(oid);
 
-        return ResponseEntity.ok(cliente);
+        return ResponseEntity.ok(clienteDto);
     }
 
 }
