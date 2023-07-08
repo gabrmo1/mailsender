@@ -8,24 +8,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/clientes")
 @RequiredArgsConstructor
+@RequestMapping("/clientes")
 public class ClienteController {
 
     private final ClienteService service;
 
     @PostMapping("/cadastrar")
     public ResponseEntity<ClienteDto> cadastrar(@RequestBody @Valid ClienteDto clienteDto) {
-        ClienteDto clienteDtoPosSave = service.criar(clienteDto);
-
-        return ResponseEntity.ok(clienteDtoPosSave);
+        return ResponseEntity.ok(service.criar(clienteDto));
     }
 
-    @GetMapping(value = "/{oid}")
+    @GetMapping("/{oid}")
     public ResponseEntity<ClienteDto> findByOid(@PathVariable("oid") String oid) {
-        ClienteDto clienteDto = service.findById(oid);
-
-        return ResponseEntity.ok(clienteDto);
+        return ResponseEntity.ok(service.findById(oid));
     }
 
 }
+
