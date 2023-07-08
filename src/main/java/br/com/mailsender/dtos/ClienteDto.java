@@ -11,7 +11,7 @@ import org.springframework.hateoas.RepresentationModel;
 import java.util.Date;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class ClienteDto extends RepresentationModel<ClienteDto> {
 
     private String chave;
