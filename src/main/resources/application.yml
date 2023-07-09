@@ -1,4 +1,6 @@
 spring:
+
+  # Configurações para o banco de dados
   datasource:
     url:
     username:
@@ -9,4 +11,17 @@ spring:
       ddl-auto:
     properties:
       hibernate:
-        dialect:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # Configurações para o envio de e-mail
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: syonet.desafio.gabrielmoreno@gmail.com
+    password: mnlwpkqqsrqrmbcd
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
