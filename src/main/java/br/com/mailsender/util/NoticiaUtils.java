@@ -16,6 +16,7 @@ public class NoticiaUtils {
         noticia.setTitulo(noticiaDto.getTitulo());
         noticia.setDescricao(noticiaDto.getDescricao());
         noticia.setLink(noticiaDto.getLink());
+        noticia.setUrlImagem(noticiaDto.getUrlImagem());
 
         return noticia;
     }

@@ -12,15 +12,16 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class Noticia extends DefaultEntityImpl {
 
-    @Column(length = 50)
+    @Column(length = 50, nullable = false)
     private String titulo;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String descricao;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String link;
 
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String urlImagem;
+
 }
-
-

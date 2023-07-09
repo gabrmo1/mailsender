@@ -20,4 +20,7 @@ public class NoticiaDto extends RepresentationModel<NoticiaDto> {
     @NotBlank(message = "O link precisa ser informado")
     private String link;
 
+    @NotBlank(message = "A URL da imagem precisa ser informada")
+    private String urlImagem;
+
 }
