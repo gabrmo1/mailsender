@@ -101,7 +101,7 @@ public class AgendadorEnvioEmailService extends AgendadorEnvioEmailUtils {
             corpoEmail
                     .append("<div style=\"margin-left: 15px;\">")
                     .append("   <h2 style=\"text-align: left; margin-bottom:0\">")
-                    .append("       <u>").append(noticia.getTitulo()).append("</u>").append("(IBGE)")
+                    .append("       <u>").append(noticia.getTitulo()).append("</u>").append("(Newsletter)")
                     .append("   </h2>")
                     .append("   <br>")
                     .append("   <div style=\"display:inline-flex;max-height: 66.5px;\">")
