@@ -107,7 +107,7 @@ public class AgendadorEnvioEmailService extends AgendadorEnvioEmailUtils {
                     .append("   <div style=\"display:inline-flex;max-height: 66.5px;\">")
                     .append("       <img")
                     .append("           style=\"padding-right:15px\"")
-                    .append("           src=\"https://agenciadenoticias.ibge.gov.br//images/agenciadenoticias/estatisticas_sociais/2023_07/PNAD_Deficientes_HOME_RoseBrasil-AgBrasil.jpg\"")
+                    .append("           src=\"").append(noticia.getUrlImagem()).append("\"")
                     .append("           width=\"120px\" heigth=\"66.5px\">")
                     .append("       <div style=\"overflow: hidden;\">")
                     .append(noticia.getDescricao())
