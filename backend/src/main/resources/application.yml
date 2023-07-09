@@ -2,13 +2,13 @@ spring:
 
   # Configurações para o banco de dados
   datasource:
-    url:
-    username:
-    password:
-    driver-class-name:
+    url: jdbc:postgresql://localhost:5432/mailsender?serverTimezone=UTC
+    username: postgres
+    password: 1nd2gw3jmm
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto:
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
