@@ -2,7 +2,6 @@ package br.com.mailsender.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.hateoas.RepresentationModel;
@@ -20,7 +19,7 @@ public class ClienteDto extends RepresentationModel<ClienteDto> {
     @Email(message = "O formato do e-mail está incorreto")
     private String email;
 
-    @NotNull(message = "A data de nascimento precisa ser informada")
+    @NotBlank(message = "A data de nascimento precisa ser informada")
     private String dataNascimento;
 
 }
