@@ -1,3 +1,7 @@
+cors:
+  originPatterns: http://localhost:5173
+
+
 spring:
 
   # Configurações para o banco de dados
