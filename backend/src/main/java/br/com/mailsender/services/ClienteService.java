@@ -18,13 +18,13 @@ public class ClienteService extends ClienteUtils {
 
     @Transactional
     public ClienteDto criar(ClienteDto clienteDto) {
-        Cliente cliente = criarEntidadeComDadosDoDTO(clienteDto);
-
-        boolean emailJaCadastrado = repository.existsClienteByEmail(cliente.getEmail());
+        boolean emailJaCadastrado = repository.existsClienteByEmail(clienteDto.getEmail());
 
         if (emailJaCadastrado) {
             throw new DadosInvalidosException("Este e-mail já está cadastrado");
         }
+
+        Cliente cliente = criarEntidadeComDadosDoDTO(clienteDto);
 
         repository.save(cliente);
 

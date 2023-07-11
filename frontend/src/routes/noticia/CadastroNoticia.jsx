@@ -44,11 +44,20 @@ export default function CadastroNoticia() {
         descricao,
         link,
         urlImagem,
-      }).then(() => {
-        alert('Sucesso ao cadastrar notícia');
-        goToHome();
+      }).then((response) => {
+        response.json()
+          .then((data) => {
+            if (data.message) {
+              alert(data.message);
+            } else {
+              alert('Sucesso ao cadastrar notícia');
+              goToHome();
+            }
+          }).catch(() => {
+            alert('Falha ao obter dados de retorno');
+          });
       }).catch(() => {
-        alert('Falha ao cadastrar notícia');
+        alert('Falha ao conectar-se com o backend');
       });
     }
 

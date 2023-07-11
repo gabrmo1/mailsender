@@ -2,6 +2,7 @@ package br.com.mailsender.services;
 
 import br.com.mailsender.dtos.NoticiaDto;
 import br.com.mailsender.entities.Noticia;
+import br.com.mailsender.exceptions.DadosInvalidosException;
 import br.com.mailsender.repositories.NoticiaRepository;
 import br.com.mailsender.util.ClassMapper;
 import br.com.mailsender.util.NoticiaUtils;
@@ -17,6 +18,10 @@ public class NoticiaService extends NoticiaUtils {
 
     @Transactional
     public NoticiaDto criar(NoticiaDto noticiaDto) {
+        if (!urlImagemValida(noticiaDto.getUrlImagem())) {
+            throw new DadosInvalidosException("A URL da Imagem precisa retornar uma imagem válida");
+        }
+
         Noticia noticia = criarEntidadeComDadosDoDTO(noticiaDto);
 
         repository.save(noticia);
