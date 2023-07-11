@@ -6,9 +6,9 @@ spring:
 
   # Configurações para o banco de dados
   datasource:
-    url: jdbc:postgresql://localhost:5432/mailsender?serverTimezone=UTC
+    url: jdbc:postgresql://db:5432/mailsender?serverTimezone=UTC
     username: postgres
-    password: 1nd2gw3jmm
+    password: MailSender123!
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
