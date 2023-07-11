@@ -2,6 +2,7 @@ package br.com.mailsender.services;
 
 import br.com.mailsender.dtos.ClienteDto;
 import br.com.mailsender.entities.Cliente;
+import br.com.mailsender.exceptions.DadosInvalidosException;
 import br.com.mailsender.repositories.ClienteRepository;
 import br.com.mailsender.util.ClassMapper;
 import br.com.mailsender.util.ClienteUtils;
@@ -18,6 +19,12 @@ public class ClienteService extends ClienteUtils {
     @Transactional
     public ClienteDto criar(ClienteDto clienteDto) {
         Cliente cliente = criarEntidadeComDadosDoDTO(clienteDto);
+
+        boolean emailJaCadastrado = repository.existsClienteByEmail(cliente.getEmail());
+
+        if (emailJaCadastrado) {
+            throw new DadosInvalidosException("Este e-mail já está cadastrado");
+        }
 
         repository.save(cliente);
 
