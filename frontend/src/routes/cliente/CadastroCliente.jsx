@@ -40,11 +40,20 @@ export default function CadastroCliente() {
         nome,
         email,
         dataNascimento,
-      }).then(() => {
-        alert('Sucesso ao cadastrar cliente');
-        goToHome();
+      }).then((response) => {
+        response.json()
+          .then((data) => {
+            if (data.message) {
+              alert(data.message);
+            } else {
+              alert('Sucesso ao cadastrar cliente');
+              goToHome();
+            }
+          }).catch(() => {
+            alert('Falha ao obter dados de retorno');
+          });
       }).catch(() => {
-        alert('Falha ao cadastrar cliente');
+        alert('Falha ao conectar-se com o backend');
       });
     }
 

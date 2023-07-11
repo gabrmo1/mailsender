@@ -3,6 +3,7 @@ package br.com.mailsender.util;
 import br.com.mailsender.controllers.NoticiaController;
 import br.com.mailsender.dtos.NoticiaDto;
 import br.com.mailsender.entities.Noticia;
+import org.apache.tika.Tika;
 import org.modelmapper.ModelMapper;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -31,6 +32,13 @@ public class NoticiaUtils {
 
     protected void implementFindByOidHATEOAS(NoticiaDto noticiaDto) {
         noticiaDto.add(linkTo(methodOn(NoticiaController.class).findByOid(noticiaDto.getChave())).withSelfRel());
+    }
+
+    public boolean urlImagemValida(String imageUrl) {
+        Tika tika = new Tika();
+        String mimeType = tika.detect(imageUrl);
+
+        return mimeType != null && mimeType.startsWith("image/");
     }
 
 }
