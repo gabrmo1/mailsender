@@ -1,16 +1,27 @@
 package br.com.mailsender.services;
 
+import br.com.mailsender.singleton.NoticiasDiariasSingleton;
 import br.com.mailsender.dtos.NoticiasIbgeDto;
+import br.com.mailsender.entities.Cliente;
 import br.com.mailsender.entities.Noticia;
+import br.com.mailsender.repositories.NoticiaCustomRepository;
 import br.com.mailsender.util.AgendadorEnvioEmailUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import jakarta.annotation.PostConstruct;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,6 +29,17 @@ import java.util.List;
 public class AgendadorEnvioEmailService extends AgendadorEnvioEmailUtils {
 
     private final RestTemplate restTemplate;
+    private final JavaMailSender mailSender;
+    private final NoticiaCustomRepository noticiaRepository;
+    private final NoticiasDiariasSingleton noticiasDiariasSingleton;
+
+    @PostConstruct
+    public void definirEstruturaInicialEmail() {
+        noticiasDiariasSingleton.setCabecalho(criarCabecalho());
+        noticiasDiariasSingleton.setCabecalhoAniversariante(criarCabecalhoAniversariante());
+
+        atualizarCorpoEmail();
+    }
 
     public NoticiasIbgeDto obterNoticiasIbge() {
         String dataConsulta = obterDataConsulta();
@@ -48,99 +70,64 @@ public class AgendadorEnvioEmailService extends AgendadorEnvioEmailUtils {
         return noticiasIBGEDto;
     }
 
-    public String criarCabecalho() {
-        StringBuilder cabecalho = new StringBuilder();
+    public void enviarEmail(Cliente cliente) {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
 
-        cabecalho
-                .append("<div style=\"text-align: center; background-color:#9e0000;color:white;\">")
-                .append("   <h1>Bom dia!</h1>")
-                .append("</div>");
+        LocalDate dataNascimento = cliente.getDataNascimento().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate hoje = LocalDate.now();
 
-        return cabecalho.toString();
+        boolean aniversarioHoje = dataNascimento.getDayOfMonth() == hoje.getDayOfMonth()
+                && dataNascimento.getMonth() == hoje.getMonth();
+
+        try {
+            helper.setTo(cliente.getEmail());
+            helper.setSubject("Notícias do dia");
+            helper.setText(aniversarioHoje ? noticiasDiariasSingleton.getConteudoEmailAniversariante() : noticiasDiariasSingleton.getConteudoEmail(), true);
+
+            mailSender.send(message);
+            System.out.println("E-mail enviado com sucesso!");
+        } catch (MessagingException e) {
+            System.out.println("Erro ao enviar o e-mail: " + e.getMessage());
+        }
     }
 
-    public String criarCabecalhoAniversariante() {
-        StringBuilder cabecalho = new StringBuilder();
-
-        cabecalho
-                .append("<div style=\"text-align: center; background-color:#9e0000;color:white;\">")
-                .append("   <h1>Bom dia! Feliz aniversário!").append("</h1>")
-                .append("</div>");
-
-        return cabecalho.toString();
+    public void redefinirConteudoEmail() {
+        noticiasDiariasSingleton.setNoticiasDiariaIbge(new ArrayList<>());
+        noticiasDiariasSingleton.setConteudoEmail("");
+        noticiasDiariasSingleton.setConteudoEmailAniversariante("");
     }
 
-    public String criarCorpoEmail(List<NoticiasIbgeDto.Item> noticiasIbge, List<Noticia> noticias) {
-        StringBuilder corpoEmail = new StringBuilder();
+    public void atualizarCorpoEmail() {
+        atualizarCorpoEmail(false);
+    }
 
-        for (NoticiasIbgeDto.Item noticiaIbge : noticiasIbge) {
-            corpoEmail
-                    .append("<div style=\"margin-left: 15px;\">")
-                    .append("   <h2 style=\"text-align: left; margin-bottom:0\">")
-                    .append("       <u>").append(noticiaIbge.getTitulo()).append("</u>").append("(IBGE)")
-                    .append("   </h2>")
-                    .append("   <br>")
-                    .append("   <div style=\"display:inline-flex;max-height: 66.5px;\">")
-                    .append("       <img")
-                    .append("           style=\"padding-right:15px\"")
-                    .append("           src=\"").append(noticiaIbge.getUrlImagem()).append("\"")
-                    .append("           width=\"120px\" heigth=\"66.5px\">")
-                    .append("       <div style=\"overflow: hidden;\">")
-                    .append(noticiaIbge.getIntroducao())
-                    .append("       </div>")
-                    .append("   </div>")
-                    .append("   <br>")
-                    .append("   <div style=\"text-align: center;\">")
-                    .append("       Para saber mais, <a href=\"").append(noticiaIbge.getLink()).append("\">clique aqui</a>")
-                    .append("   </div>")
-                    .append("   <hr>")
-                    .append("</div>");
+    public void atualizarCorpoEmail(boolean novaNoticia) {
+        List<Noticia> noticiasNewsletter = noticiaRepository.obterNoticiasNewsletter();
+
+        if (!novaNoticia || noticiasDiariasSingleton.getNoticiasDiariaIbge().isEmpty()) {
+            List<NoticiasDiariasSingleton.NoticiaDiaria> noticiasDiariasIbge = noticiasDiariasSingleton.getNoticiasDiariaIbge();
+
+            NoticiasIbgeDto noticiasIbgeDto = obterNoticiasIbge();
+
+            for (NoticiasIbgeDto.Item item : noticiasIbgeDto.getItems()) {
+                NoticiasDiariasSingleton.NoticiaDiaria novaNoticiaIbge = new NoticiasDiariasSingleton.NoticiaDiaria();
+
+                novaNoticiaIbge.setTitulo(item.getTitulo());
+                novaNoticiaIbge.setDescricao(item.getIntroducao());
+                novaNoticiaIbge.setLink(item.getLink());
+                novaNoticiaIbge.setUrlImagem(item.getUrlImagem());
+
+                noticiasDiariasIbge.add(novaNoticiaIbge);
+            }
+
+            noticiasDiariasSingleton.setNoticiasDiariaIbge(noticiasDiariasIbge);
         }
 
-        for (Noticia noticia : noticias) {
-            corpoEmail
-                    .append("<div style=\"margin-left: 15px;\">")
-                    .append("   <h2 style=\"text-align: left; margin-bottom:0\">")
-                    .append("       <u>").append(noticia.getTitulo()).append("</u>").append("(Newsletter)")
-                    .append("   </h2>")
-                    .append("   <br>")
-                    .append("   <div style=\"display:inline-flex;max-height: 66.5px;\">")
-                    .append("       <img")
-                    .append("           style=\"padding-right:15px\"")
-                    .append("           src=\"").append(noticia.getUrlImagem()).append("\"")
-                    .append("           width=\"120px\" heigth=\"66.5px\">")
-                    .append("       <div style=\"overflow: hidden;\">")
-                    .append(noticia.getDescricao())
-                    .append("       </div>")
-                    .append("   </div>")
-                    .append("   <br>")
-                    .append("   <div style=\"text-align: center;\">")
-                    .append("       Para saber mais, <a href=\"").append(noticia.getLink()).append("\">clique aqui</a>")
-                    .append("   </div>")
-                    .append("   <hr>")
-                    .append("</div>");
-        }
+        String corpoEmail = criarCorpoEmail(noticiasDiariasSingleton.getNoticiasDiariaIbge(), noticiasNewsletter);
 
-        return corpoEmail.toString();
+        noticiasDiariasSingleton.setConteudoEmail(criarConteudoEmail(noticiasDiariasSingleton.getCabecalho(), corpoEmail));
+        noticiasDiariasSingleton.setConteudoEmailAniversariante(criarConteudoEmail(noticiasDiariasSingleton.getCabecalhoAniversariante(), corpoEmail));
     }
 
-    public String criarConteudoEmail(String cabecalho, String corpoEmail) {
-        StringBuilder conteudoEmail = new StringBuilder();
-
-        conteudoEmail
-                .append("<html lang=\"pt-br\">")
-                .append("   <head>")
-                .append("       <meta charset=\"UTF-8\">")
-                .append("   </head>")
-                .append("   <body>")
-                .append("       <div style=\"border: 1px solid lightgray; border-radius:15px; background-color:#ebebeb\">")
-                .append(cabecalho)
-                .append("       <br>")
-                .append(corpoEmail)
-                .append("       </div>")
-                .append("   </body>")
-                .append("</html>");
-
-        return conteudoEmail.toString();
-    }
 }

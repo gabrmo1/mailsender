@@ -19,14 +19,11 @@ public class NoticiaCustomRepository {
     @SuppressWarnings("unchecked")
     public List<Noticia> obterNoticiasNewsletter() {
         LocalDate dataConsulta = LocalDate.now().minusDays(1);
-        LocalDate hoje = LocalDate.now();
 
         Date dataConsultaDate = java.sql.Date.valueOf(dataConsulta);
-        Date hojeDate = java.sql.Date.valueOf(hoje);
-        Query consulta = entityManager.createQuery("SELECT n FROM Noticia n WHERE n.creationDate BETWEEN :dataConsulta AND :hoje");
+        Query consulta = entityManager.createQuery("SELECT n FROM Noticia n WHERE n.creationDate > :dataConsulta");
 
-        consulta.setParameter("dataConsulta", dataConsultaDate)
-                .setParameter("hoje", hojeDate);
+        consulta.setParameter("dataConsulta", dataConsultaDate);
 
         return consulta.getResultList();
     }
