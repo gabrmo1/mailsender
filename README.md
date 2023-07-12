@@ -11,13 +11,19 @@ Se você tiver o Docker instalado e atender aos requisitos, siga os passos abaix
 1. Certifique-se de que as portas **8080, 5173 e 5432** estejam abertas e desocupadas.
 2. Abra um terminal e navegue até a raíz do projeto.
 3. Gere um jar do backend utilizando o seguinte comando na pasta backend:
-
+   * Na pasta backend execute o comando:
    ```bash
    mvn clean package -DskipTests
    ```
 
-4. Na raiz do projeto, execute o seguinte comando para iniciar os containers do backend, frontend e banco de dados:
+4. Instale as dependências do frontend:
+   *  Na pasta frontend execute o comando:
+   ```bash
+   npm install
+   ```
 
+5. Na raiz do projeto, execute o seguinte comando para iniciar os containers do backend, frontend e banco de dados:
+   * Na pasta raiz do projeto execute o comando:
     ```bash
     docker-compose up
     ```
@@ -33,15 +39,14 @@ abaixo:
 2. altere o arquivo de configuração de banco de dados no
    backend ([application.yml](backend/src/main/resources/application.yml)) para as configurações da sua preferência.
 3. Inicie o backend:
-    * Na pasta backend, execute o comando:
+    * Na pasta backend execute o comando:
    ```bash
    mvn spring-boot:run
    ```
     * Obs: Certifique-se de que a conexão com o banco de dados foi estabelecida antes de continuar.
 
 4. Instale as dependências do frontend e execute o serviço:
-
-* Na pasta frontend, execute os comandos:
+* Na pasta frontend execute os comandos:
     ```bash
     npm install
     npm run dev
