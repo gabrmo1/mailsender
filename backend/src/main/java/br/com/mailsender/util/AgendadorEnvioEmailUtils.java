@@ -83,6 +83,10 @@ public class AgendadorEnvioEmailUtils {
                     .append("</div>");
         }
 
+        corpoEmail.append("<br>");
+        corpoEmail.append("<div style=\"margin-left: 15px;\"> Até a próxima! </div>");
+        corpoEmail.append("<br>");
+
         return corpoEmail.toString();
     }
 
