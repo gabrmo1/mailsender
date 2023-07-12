@@ -17,7 +17,7 @@ public class ClienteService extends ClienteUtils {
     private final ClienteRepository repository;
 
     @Transactional
-    public ClienteDto criar(ClienteDto clienteDto) {
+    public Cliente criar(ClienteDto clienteDto) {
         boolean emailJaCadastrado = repository.existsClienteByEmail(clienteDto.getEmail());
 
         if (emailJaCadastrado) {
@@ -31,7 +31,7 @@ public class ClienteService extends ClienteUtils {
         ClienteDto clienteDtoPosSave = ClassMapper.parseObject(configuredMapper(), cliente, ClienteDto.class);
         implementFindByOidHATEOAS(clienteDtoPosSave);
 
-        return clienteDtoPosSave;
+        return cliente;
     }
 
     public ClienteDto findById(String oid) {

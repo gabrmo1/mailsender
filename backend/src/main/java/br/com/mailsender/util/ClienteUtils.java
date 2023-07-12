@@ -27,7 +27,7 @@ public class ClienteUtils {
         return cliente;
     }
 
-    protected ModelMapper configuredMapper() {
+    public ModelMapper configuredMapper() {
         ModelMapper mapper = new ModelMapper();
 
         mapper.typeMap(Cliente.class, ClienteDto.class).addMappings(mapping -> mapping.map(Cliente::getOid, ClienteDto::setChave));
@@ -35,7 +35,7 @@ public class ClienteUtils {
         return mapper;
     }
 
-    protected void implementFindByOidHATEOAS(ClienteDto clienteDto) {
+    public void implementFindByOidHATEOAS(ClienteDto clienteDto) {
         clienteDto.add(linkTo(methodOn(ClienteController.class).findByOid(clienteDto.getChave())).withSelfRel());
     }
 
